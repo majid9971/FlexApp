@@ -1,25 +1,59 @@
-<project name="FlexApp" default="test">
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="FlexApp" default="test" basedir=".">
 
-    <property name="FLEX_HOME" value="${env.FLEX_HOME}" />
-    <property name="src.dir" value="src"/>
-    <property name="test.dir" value="test"/>
+    <!-- ============================= -->
+    <!-- Environment / Directories -->
+    <!-- ============================= -->
+
+    <!-- FLEX_HOME must be exported by CI or local shell -->
+    <property environment="env"/>
+    <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
+
+    <property name="src.dir"   value="src"/>
+    <property name="test.dir"  value="test"/>
     <property name="build.dir" value="build"/>
-    <property name="libs.dir" value="lib/flexunit"/>
+    <property name="libs.dir"  value="lib"/>
 
-    <taskdef resource="flexTasks.tasks"
-             classpath="${FLEX_HOME}/ant/lib/flexTasks.jar"/>
-
-    <target name="compile">
-        <mkdir dir="${build.dir}"/>
-        <mxmlc
-            source-path="${src.dir}"
-            output="${build.dir}/app.swf"
-            library-path="${libs.dir}"
-            />
+    <!-- ============================= -->
+    <!-- Validate FLEX_HOME -->
+    <!-- ============================= -->
+    <target name="validate-env">
+        <fail message="FLEX_HOME is not set.">
+            <condition>
+                <not>
+                    <isset property="FLEX_HOME"/>
+                </not>
+            </condition>
+        </fail>
     </target>
 
+    <!-- ============================= -->
+    <!-- Load Apache Flex Ant Tasks -->
+    <!-- ============================= -->
+    <taskdef
+        resource="flexTasks.tasks"
+        classpath="${FLEX_HOME}/ant/lib/flexTasks.jar"/>
+
+    <!-- ============================= -->
+    <!-- Compile Application -->
+    <!-- ============================= -->
+    <target name="compile" depends="validate-env">
+        <mkdir dir="${build.dir}"/>
+
+        <mxmlc
+            file="${src.dir}/Main.mxml"
+            output="${build.dir}/FlexApp.swf"
+            source-path="${src.dir}"
+            library-path="${libs.dir}"
+            debug="true"
+            verbose-stacktraces="true"/>
+    </target>
+
+    <!-- ============================= -->
+    <!-- Compile Tests (NO execution yet) -->
+    <!-- ============================= -->
     <target name="test" depends="compile">
-        <echo message="FlexUnit tests compiled successfully"/>
+        <echo message="Flex compilation successful. Test runner wiring will be added later."/>
     </target>
 
 </project>
