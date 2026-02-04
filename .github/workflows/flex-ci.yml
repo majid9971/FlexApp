@@ -1,4 +1,4 @@
-name: Flex CI with Coverage
+name: Flex CI
 
 on:
   push:
@@ -10,35 +10,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      # 2. Java
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 11
 
-      # 3. Download Apache Flex SDK from Maven Central (STABLE)
-      - name: Install Apache Flex SDK
+      - name: Install Apache Flex SDK (from Maven Central)
         run: |
-          mkdir -p $HOME/flexsdk
-          wget https://repo1.maven.org/maven2/org/apache/flex/apache-flex-sdk/4.16.1/apache-flex-sdk-4.16.1-bin.tar.gz
-          tar -xzf apache-flex-sdk-4.16.1-bin.tar.gz -C $HOME
-          mv $HOME/apache-flex-sdk-4.16.1 $HOME/flexsdk
+          wget https://repo1.maven.org/maven2/org/apache/flex/sdk/apache-flex-sdk/4.16.1/apache-flex-sdk-4.16.1-bin.tar.gz
+          tar -xzf apache-flex-sdk-4.16.1-bin.tar.gz
+          mv apache-flex-sdk-4.16.1 $HOME/flexsdk
           echo "FLEX_HOME=$HOME/flexsdk" >> $GITHUB_ENV
 
-      # 4. Install Ant
       - name: Install Ant
         run: sudo apt-get update && sudo apt-get install -y ant
 
-      # 5. Verify
       - name: Verify Flex SDK
         run: |
           echo "FLEX_HOME=$FLEX_HOME"
           ls $FLEX_HOME/bin/mxmlc
 
-      # 6. Run Ant build
-      - name: Run Ant tests
+      - name: Run Ant build
         run: ant test
+
+      # SonarQube (enable later)
+      # - name: SonarQube Scan
+      #   uses: SonarSource/sonarqube-scan-action@v2
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: https://sonar.cybage.com
