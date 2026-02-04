@@ -24,7 +24,9 @@ jobs:
         run: |
           wget https://archive.apache.org/dist/flex/4.16.1/binaries/apache-flex-sdk-4.16.1-bin.tar.gz
           tar -xzf apache-flex-sdk-4.16.1-bin.tar.gz
-          echo "FLEX_HOME=$PWD/apache-flex-sdk-4.16.1" >> $GITHUB_ENV
+          ls -l
+          FLEX_DIR=$(ls -d apache-flex-sdk-*)
+          echo "FLEX_HOME=$PWD/$FLEX_DIR" >> $GITHUB_ENV
 
       - name: Install Ant
         run: sudo apt-get install -y ant
@@ -32,6 +34,7 @@ jobs:
       - name: Verify Flex SDK
         run: |
           echo "FLEX_HOME=$FLEX_HOME"
+          ls $FLEX_HOME
           ls $FLEX_HOME/bin
 
       - name: Run tests
