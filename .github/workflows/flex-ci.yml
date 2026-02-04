@@ -2,7 +2,8 @@ name: Flex CI with Coverage
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
 
 jobs:
@@ -10,20 +11,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # -------------------------------------------------
+      # 1. Checkout source
+      # -------------------------------------------------
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # -------------------------------------------------
+      # 2. Setup Java
+      # -------------------------------------------------
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 11
 
+      # -------------------------------------------------
+      # 3. Install Apache Flex SDK (CI-safe installer)
+      # -------------------------------------------------
       - name: Install Apache Flex SDK (CI-safe)
         run: |
-          wget https://archive.apache.org/dist/flex/flex-sdk-installer/3.3.1/apache-flex-sdk-installer-3.3.1-bin.tar.gz
-          tar -xzf apache-flex-sdk-installer-3.3.1-bin.tar.gz
-          cd apache-flex-sdk-installer-3.3.1-bin
+          wget https://archive.apache.org/dist/flex/sdk-installer/apache-flex-sdk-installer-3.2.0-bin.tar.gz
+          tar -xzf apache-flex-sdk-installer-3.2.0-bin.tar.gz
+          cd apache-flex-sdk-installer-3.2.0-bin
+          chmod +x apache-flex-sdk-installer
           echo "y" | ./apache-flex-sdk-installer \
             -sdk 4.16.1 \
             -directory $HOME/flexsdk \
@@ -31,19 +42,30 @@ jobs:
             -flash 32.0
           echo "FLEX_HOME=$HOME/flexsdk" >> $GITHUB_ENV
 
+      # -------------------------------------------------
+      # 4. Install Apache Ant
+      # -------------------------------------------------
       - name: Install Ant
         run: sudo apt-get update && sudo apt-get install -y ant
 
+      # -------------------------------------------------
+      # 5. Verify Flex SDK
+      # -------------------------------------------------
       - name: Verify Flex SDK
         run: |
           echo "FLEX_HOME=$FLEX_HOME"
           ls $FLEX_HOME/bin/mxmlc
           ls $FLEX_HOME/frameworks/libs/player
 
+      # -------------------------------------------------
+      # 6. Run Ant build / tests
+      # -------------------------------------------------
       - name: Run Ant tests
         run: ant test
 
-      # SonarQube step (enable after permission)
+      # -------------------------------------------------
+      # 7. SonarQube Scan (ENABLE AFTER PERMISSION)
+      # -------------------------------------------------
       # - name: SonarQube Scan
       #   uses: SonarSource/sonarqube-scan-action@v2
       #   env:
