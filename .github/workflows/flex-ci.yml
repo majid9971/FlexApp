@@ -22,11 +22,11 @@ jobs:
 
       - name: Install Flex SDK
         run: |
-          wget https://archive.apache.org/dist/flex/4.16.1/binaries/apache-flex-sdk-4.16.1-bin.tar.gz
-          tar -xzf apache-flex-sdk-4.16.1-bin.tar.gz
-          ls -l
-          FLEX_DIR=$(ls -d apache-flex-sdk-*)
-          echo "FLEX_HOME=$PWD/$FLEX_DIR" >> $GITHUB_ENV
+         wget https://archive.apache.org/dist/flex/4.16.1/binaries/apache-flex-sdk-4.16.1-bin.tar.gz
+         tar -xzf apache-flex-sdk-4.16.1-bin.tar.gz
+
+         FLEX_DIR=$(ls -d apache-flex-sdk-*-bin | head -n 1)
+         echo "FLEX_HOME=$PWD/$FLEX_DIR" >> $GITHUB_ENV
 
       - name: Install Ant
         run: sudo apt-get install -y ant
