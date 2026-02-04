@@ -21,10 +21,3 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}:/workspace \
             flex-ci ant test
-
-      # Enable after Sonar permission
-      # - name: SonarQube Scan
-      #   uses: SonarSource/sonarqube-scan-action@v2
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #     SONAR_HOST_URL: https://sonar.cybage.com
