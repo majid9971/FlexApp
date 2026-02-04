@@ -17,7 +17,6 @@
             verbose="true">
 
             <source dir="${src.dir}"/>
-
             <coverage enabled="true"/>
 
         </flexunit>
