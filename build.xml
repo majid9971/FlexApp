@@ -2,7 +2,6 @@
 
     <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
     <property name="src.dir" value="src"/>
-    <property name="build.dir" value="build"/>
     <property name="reports.dir" value="build/reports"/>
 
     <mkdir dir="${reports.dir}"/>
@@ -10,7 +9,6 @@
     <taskdef resource="flexTasks.tasks"
              classpath="${FLEX_HOME}/ant/lib/flexTasks.jar"/>
 
-    <!-- Compile + run FlexUnit tests with coverage -->
     <target name="test">
         <flexunit
             workingDir="${basedir}"
