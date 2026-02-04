@@ -38,11 +38,12 @@ jobs:
       # -------------------------------------------------
       # 4. Install Flash playerglobal (REQUIRED)
       # -------------------------------------------------
-      - name: Install Flash playerglobal
+      - name: Install Flex dependencies (playerglobal via installer)
         run: |
-          mkdir -p $FLEX_HOME/frameworks/libs/player/32.0
-          wget https://fpdownload.macromedia.com/get/flashplayer/installers/archive/playerglobal/playerglobal32_0.swc \
-            -O $FLEX_HOME/frameworks/libs/player/32.0/playerglobal.swc
+          cd $FLEX_HOME
+          chmod +x installer
+          echo "y" | ./installer -q
+
 
       # -------------------------------------------------
       # 5. Install Apache Ant
