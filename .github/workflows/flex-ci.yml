@@ -19,12 +19,11 @@ jobs:
           distribution: temurin
           java-version: 11
 
-      - name: Install Apache Flex SDK (from Maven Central)
+      - name: Download Apache Flex SDK (ARCHIVE – WORKING)
         run: |
-          wget https://repo1.maven.org/maven2/org/apache/flex/sdk/apache-flex-sdk/4.16.1/apache-flex-sdk-4.16.1-bin.tar.gz
+          wget https://archive.apache.org/dist/flex/4.16.1/binaries/apache-flex-sdk-4.16.1-bin.tar.gz
           tar -xzf apache-flex-sdk-4.16.1-bin.tar.gz
-          mv apache-flex-sdk-4.16.1 $HOME/flexsdk
-          echo "FLEX_HOME=$HOME/flexsdk" >> $GITHUB_ENV
+          echo "FLEX_HOME=$PWD/apache-flex-sdk-4.16.1-bin" >> $GITHUB_ENV
 
       - name: Install Ant
         run: sudo apt-get update && sudo apt-get install -y ant
@@ -35,11 +34,4 @@ jobs:
           ls $FLEX_HOME/bin/mxmlc
 
       - name: Run Ant build
-        run: ant test
-
-      # SonarQube (enable later)
-      # - name: SonarQube Scan
-      #   uses: SonarSource/sonarqube-scan-action@v2
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #     SONAR_HOST_URL: https://sonar.cybage.com
+        run: ant compile
