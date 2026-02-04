@@ -19,12 +19,13 @@ jobs:
           distribution: temurin
           java-version: 11
 
-      - name: Install Apache Flex SDK via Installer
+      - name: Install Apache Flex SDK (with playerglobal)
         run: |
-          wget https://archive.apache.org/dist/flex/sdk-installer/3.3.1/binaries/apache-flex-sdk-installer-3.3.1-bin.zip
+          wget https://archive.apache.org/dist/flex/flex-sdk-installer/3.3.1/binaries/apache-flex-sdk-installer-3.3.1-bin.zip
           unzip apache-flex-sdk-installer-3.3.1-bin.zip
           cd apache-flex-sdk-installer-3.3.1-bin
           chmod +x apache-flex-sdk-installer
+
           echo "y" | ./apache-flex-sdk-installer \
             -sdk 4.16.1 \
             -directory $HOME/flexsdk \
