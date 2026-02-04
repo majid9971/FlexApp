@@ -1,9 +1,8 @@
-name: Flex CI with Coverage
+name: Flex CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
 
 jobs:
@@ -11,44 +10,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Java
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 11
 
+      - name: Install Ant
+        run: sudo apt-get update && sudo apt-get install -y ant
+
       - name: Install Flex SDK
         run: |
-         wget https://archive.apache.org/dist/flex/4.16.1/binaries/apache-flex-sdk-4.16.1-bin.tar.gz
-         tar -xzf apache-flex-sdk-4.16.1-bin.tar.gz
+          wget https://archive.apache.org/dist/flex/4.16.1/binaries/apache-flex-sdk-4.16.1-bin.tar.gz
+          tar -xzf apache-flex-sdk-4.16.1-bin.tar.gz
+          echo "FLEX_HOME=$PWD/apache-flex-sdk-4.16.1-bin" >> $GITHUB_ENV
 
-         FLEX_DIR=$(ls -d apache-flex-sdk-*-bin | head -n 1)
-         echo "FLEX_HOME=$PWD/$FLEX_DIR" >> $GITHUB_ENV
-
-      - name: Install Ant
-        run: sudo apt-get install -y ant
-
-      - name: Verify Flex SDK
+      - name: Install playerglobal
         run: |
-          echo "FLEX_HOME=$FLEX_HOME"
-          ls $FLEX_HOME
-          ls $FLEX_HOME/bin
+          mkdir -p $FLEX_HOME/frameworks/libs/player/27.0
+          wget https://archive.apache.org/dist/flex/4.16.1/playerglobal/playerglobal.swc \
+            -O $FLEX_HOME/frameworks/libs/player/27.0/playerglobal.swc
 
-      - name: Skip Flex build (static analysis only)
-        run: echo "Flex build skipped – SonarQube static analysis only"
-
-
-      # ======================================================
-      # SonarQube Analysis (ENABLE AFTER PERMISSION IS GIVEN)
-      # ======================================================
-      #
-      # - name: SonarQube Scan
-      #   uses: SonarSource/sonarqube-scan-action@v2
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #     SONAR_HOST_URL: https://sonar.cybage.com
-      #   with:
-      #     projectBaseDir: .
+      - name: Run Ant tests
+        run: ant test
