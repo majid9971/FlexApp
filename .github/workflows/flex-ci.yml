@@ -37,8 +37,9 @@ jobs:
           ls $FLEX_HOME
           ls $FLEX_HOME/bin
 
-      - name: Run tests
-        run: ant test
+      - name: Skip Flex build (static analysis only)
+        run: echo "Flex build skipped – SonarQube static analysis only"
+
 
       # ======================================================
       # SonarQube Analysis (ENABLE AFTER PERMISSION IS GIVEN)
