@@ -1,28 +1,28 @@
-<project name="FlexApp" default="compile" basedir=".">
+<project name="FlexCoverage" default="test">
 
-    <property environment="env"/>
     <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
-
     <property name="src.dir" value="src"/>
     <property name="build.dir" value="build"/>
+    <property name="reports.dir" value="build/reports"/>
 
-    <!-- Load Flex Ant tasks -->
-    <taskdef
-        resource="flexTasks.tasks"
-        classpath="${FLEX_HOME}/ant/lib/flexTasks.jar"/>
+    <mkdir dir="${reports.dir}"/>
 
-    <target name="validate-env">
-        <fail unless="FLEX_HOME">
-            FLEX_HOME is not set
-        </fail>
-    </target>
+    <taskdef resource="flexTasks.tasks"
+             classpath="${FLEX_HOME}/ant/lib/flexTasks.jar"/>
 
-    <target name="compile" depends="validate-env">
-        <mkdir dir="${build.dir}"/>
+    <!-- Compile + run FlexUnit tests with coverage -->
+    <target name="test">
+        <flexunit
+            workingDir="${basedir}"
+            toDir="${reports.dir}"
+            haltonfailure="true"
+            verbose="true">
 
-        <mxmlc
-            file="${src.dir}/Main.mxml"
-            output="${build.dir}/app.swf"/>
+            <source dir="${src.dir}"/>
+
+            <coverage enabled="true"/>
+
+        </flexunit>
     </target>
 
 </project>
