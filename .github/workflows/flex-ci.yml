@@ -1,4 +1,4 @@
-name: Flex CI Build
+name: Flex CI Coverage
 
 on:
   push:
@@ -6,40 +6,21 @@ on:
   pull_request:
 
 jobs:
-  flex-build:
+  flex-test:
     runs-on: ubuntu-latest
 
+    container:
+      image: apache/flex:4.16.1
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 11
+      - name: Run FlexUnit tests with coverage
+        run: ant test
 
-      - name: Install Apache Flex SDK (with playerglobal)
-        run: |
-          wget https://archive.apache.org/dist/flex/flex-sdk-installer/3.3.1/binaries/apache-flex-sdk-installer-3.3.1-bin.zip
-          unzip apache-flex-sdk-installer-3.3.1-bin.zip
-          cd apache-flex-sdk-installer-3.3.1-bin
-          chmod +x apache-flex-sdk-installer
-
-          echo "y" | ./apache-flex-sdk-installer \
-            -sdk 4.16.1 \
-            -directory $HOME/flexsdk \
-            -flash 27.0 \
-            -air 27.0
-
-          echo "FLEX_HOME=$HOME/flexsdk" >> $GITHUB_ENV
-
-      - name: Install Ant
-        run: sudo apt-get update && sudo apt-get install -y ant
-
-      - name: Verify playerglobal
-        run: |
-          ls $FLEX_HOME/frameworks/libs/player/27.0/playerglobal.swc
-
-      - name: Compile Flex App
-        run: ant compile
+      # Enable only after Sonar permission
+      # - name: SonarQube Scan
+      #   uses: SonarSource/sonarqube-scan-action@v2
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: https://sonar.cybage.com
