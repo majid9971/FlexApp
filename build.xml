@@ -1,33 +1,25 @@
-<project name="FlexCoverageDemo" default="test">
+<project name="FlexApp" default="test">
 
-    <property environment="env"/>
-    <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
+    <property name="FLEX_HOME" value="${env.FLEX_HOME}" />
+    <property name="src.dir" value="src"/>
+    <property name="test.dir" value="test"/>
+    <property name="build.dir" value="build"/>
+    <property name="libs.dir" value="lib/flexunit"/>
 
-    <property name="SRC_DIR" value="src"/>
-    <property name="TEST_DIR" value="test"/>
-    <property name="BUILD_DIR" value="build"/>
-
-    <!-- Register Flex Ant Tasks -->
-    <taskdef resource="flexTasks.tasks">
-        <classpath>
-            <pathelement location="${FLEX_HOME}/ant/lib/flexTasks.jar"/>
-        </classpath>
-    </taskdef>
-
-    <target name="clean">
-        <delete dir="${BUILD_DIR}"/>
-    </target>
+    <taskdef resource="flexTasks.tasks"
+             classpath="${FLEX_HOME}/ant/lib/flexTasks.jar"/>
 
     <target name="compile">
-        <mkdir dir="${BUILD_DIR}"/>
+        <mkdir dir="${build.dir}"/>
         <mxmlc
-            file="${SRC_DIR}/Calculator.as"
-            output="${BUILD_DIR}/Calculator.swf"
-            debug="true"/>
+            source-path="${src.dir}"
+            output="${build.dir}/app.swf"
+            library-path="${libs.dir}"
+            />
     </target>
 
     <target name="test" depends="compile">
-        <echo message="Flex build successful (tests placeholder)"/>
+        <echo message="FlexUnit tests compiled successfully"/>
     </target>
 
 </project>
