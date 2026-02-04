@@ -9,23 +9,20 @@ jobs:
   flex-test:
     runs-on: ubuntu-latest
 
-    container:
-      image: jasonrivers/apache-flex
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Verify Flex environment
+      - name: Build Flex Docker image
+        run: docker build -t flex-ci .
+
+      - name: Run Flex tests with coverage
         run: |
-          echo "FLEX_HOME=$FLEX_HOME"
-          ant -version
-          mxmlc -version || true
+          docker run --rm \
+            -v ${{ github.workspace }}:/workspace \
+            flex-ci ant test
 
-      - name: Run FlexUnit tests (coverage)
-        run: ant test
-
-      # Enable ONLY after Sonar permission is granted
+      # Enable after Sonar permission
       # - name: SonarQube Scan
       #   uses: SonarSource/sonarqube-scan-action@v2
       #   env:
