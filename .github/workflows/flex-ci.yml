@@ -1,8 +1,9 @@
-name: Flex CI
+name: Flex CI with Coverage
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
 
 jobs:
@@ -10,28 +11,67 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # -------------------------------------------------
+      # 1. Checkout source code
+      # -------------------------------------------------
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Setup Java
+      # -------------------------------------------------
+      # 2. Setup Java (Flex 4.x needs Java 8/11)
+      # -------------------------------------------------
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 11
 
-      - name: Install Ant
-        run: sudo apt-get update && sudo apt-get install -y ant
-
+      # -------------------------------------------------
+      # 3. Install Apache Flex SDK
+      # -------------------------------------------------
       - name: Install Flex SDK
         run: |
           wget https://archive.apache.org/dist/flex/4.16.1/binaries/apache-flex-sdk-4.16.1-bin.tar.gz
           tar -xzf apache-flex-sdk-4.16.1-bin.tar.gz
           echo "FLEX_HOME=$PWD/apache-flex-sdk-4.16.1-bin" >> $GITHUB_ENV
 
-      - name: Install playerglobal
+      # -------------------------------------------------
+      # 4. Install Flash playerglobal (REQUIRED)
+      # -------------------------------------------------
+      - name: Install Flash playerglobal
         run: |
-          mkdir -p $FLEX_HOME/frameworks/libs/player/27.0
-          wget https://archive.apache.org/dist/flex/4.16.1/playerglobal/playerglobal.swc \
-            -O $FLEX_HOME/frameworks/libs/player/27.0/playerglobal.swc
+          mkdir -p $FLEX_HOME/frameworks/libs/player/32.0
+          wget https://fpdownload.macromedia.com/get/flashplayer/installers/archive/playerglobal/playerglobal32_0.swc \
+            -O $FLEX_HOME/frameworks/libs/player/32.0/playerglobal.swc
 
+      # -------------------------------------------------
+      # 5. Install Apache Ant
+      # -------------------------------------------------
+      - name: Install Ant
+        run: sudo apt-get update && sudo apt-get install -y ant
+
+      # -------------------------------------------------
+      # 6. Verify Flex installation (safe check)
+      # -------------------------------------------------
+      - name: Verify Flex SDK
+        run: |
+          echo "FLEX_HOME=$FLEX_HOME"
+          ls $FLEX_HOME/bin
+          ls $FLEX_HOME/frameworks/libs/player/32.0/playerglobal.swc
+
+      # -------------------------------------------------
+      # 7. Run Flex build & tests
+      # -------------------------------------------------
       - name: Run Ant tests
         run: ant test
+
+      # -------------------------------------------------
+      # 8. SonarQube Scan (ENABLE LATER)
+      # -------------------------------------------------
+      # - name: SonarQube Scan
+      #   uses: SonarSource/sonarqube-scan-action@v2
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: https://sonar.cybage.com
+      #   with:
+      #     projectBaseDir: .
