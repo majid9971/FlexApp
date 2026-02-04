@@ -2,7 +2,8 @@ name: Flex CI with Coverage
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
 
 jobs:
@@ -35,3 +36,15 @@ jobs:
 
       - name: Run tests
         run: ant test
+
+      # ======================================================
+      # SonarQube Analysis (ENABLE AFTER PERMISSION IS GIVEN)
+      # ======================================================
+      #
+      # - name: SonarQube Scan
+      #   uses: SonarSource/sonarqube-scan-action@v2
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: https://sonar.cybage.com
+      #   with:
+      #     projectBaseDir: .
