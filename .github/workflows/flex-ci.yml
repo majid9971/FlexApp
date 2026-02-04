@@ -10,22 +10,22 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: jasonrivers/flex-sdk
+      image: jasonrivers/apache-flex
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Verify Flex SDK
+      - name: Verify Flex environment
         run: |
           echo "FLEX_HOME=$FLEX_HOME"
-          ls $FLEX_HOME/bin
-          ls $FLEX_HOME/ant/lib
+          ant -version
+          mxmlc -version || true
 
-      - name: Run FlexUnit tests with coverage
+      - name: Run FlexUnit tests (coverage)
         run: ant test
 
-      # Enable later (permission pending)
+      # Enable ONLY after Sonar permission is granted
       # - name: SonarQube Scan
       #   uses: SonarSource/sonarqube-scan-action@v2
       #   env:
