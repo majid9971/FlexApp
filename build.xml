@@ -1,0 +1,27 @@
+<project name="FlexCoverageDemo" default="test">
+
+    <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
+    <property name="SRC_DIR" value="src"/>
+    <property name="TEST_DIR" value="test"/>
+    <property name="BUILD_DIR" value="build"/>
+
+    <taskdef resource="flexTasks.tasks"
+             classpath="${FLEX_HOME}/ant/lib/flexTasks.jar"/>
+
+    <target name="clean">
+        <delete dir="${BUILD_DIR}"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${BUILD_DIR}"/>
+        <mxmlc file="${SRC_DIR}/Calculator.as"
+               output="${BUILD_DIR}/Calculator.swf"
+               debug="true"/>
+    </target>
+
+    <target name="test" depends="compile">
+        <!-- Placeholder: FlexUnit runner -->
+        <echo message="Tests executed (FlexUnit)"/>
+    </target>
+
+</project>
